@@ -13,12 +13,18 @@ import ContentClear from 'material-ui/svg-icons/content/clear';
 import ActionHelpOutline from 'material-ui/svg-icons/action/help-outline';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
+import ContentAdd from 'material-ui/svg-icons/content/add';
 
 const fab_style = {position: 'absolute', bottom: 5, right: 5}
 
 
 const floatingButton = (onClick) =>(
   <FloatingActionButton style={fab_style} secondary={false} onTouchTap={onClick}> <ActionHelpOutline /> </FloatingActionButton>
+)
+
+
+const closeButton = (onClick) => (
+  <IconButton onTouchTap={onClick} style={{float: 'right'}} > <ContentClear /> </IconButton>
 )
 
 class AppComponent extends React.Component {
@@ -35,7 +41,7 @@ class AppComponent extends React.Component {
     <div>
     {floatingButton(this.handleClick)}
       <Drawer onRequestChange={this.onRequestChange} width={225} openSecondary={true} docked={true} open={this.state.open} >
-        <IconButton onTouchTap={this.handleClick} style={{float: 'right'}} > <ContentClear /> </IconButton>
+      {closeButton(this.handleClick)}
            <List>
            <Subheader>Articles</Subheader>
             <ListItem primaryText="Article 1"/>
