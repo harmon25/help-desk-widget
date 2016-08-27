@@ -14,8 +14,12 @@ import ActionHelpOutline from 'material-ui/svg-icons/action/help-outline';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import RefreshIndicator from 'material-ui/RefreshIndicator';
 
 const fab_style = {position: 'absolute', bottom: 5, right: 5}
+
+
+const fetch = window.fetch
 
 
 const floatingButton = (onClick) =>(
@@ -29,13 +33,30 @@ const closeButton = (onClick) => (
 
 class AppComponent extends React.Component {
 
-  state = {open: false}
+  state = {open: false, articles: []}
+
+  componentWillMount(){
+    fetch('https://pcipilot.zendesk.com/api/v2/help_center/articles.json')
+      .then((response)=>{
+        return response.json()
+      }).then((json)=>{
+        this.setState({articles: json.articles})
+      }).catch((ex)=> {
+        console.log('parsing failed', ex)
+      })
+  }
 
   handleClick = () => this.setState({open: !this.state.open})
   onRequestChange = () => this.setState({open: !this.state.open })
 
 
   render() {
+    const articlesList = this.state.articles ? this.state.articles.map((article)=>(<ListItem primaryText={article.title}/>)) :  <RefreshIndicator
+      size={40}
+      left={10}
+      top={0}
+      status="loading"
+    />
     //const button = this.state.open ? '' : <FloatingActionButton style={fab_style} onTouchTap={this.handleClick}> <ContentAdd /> </FloatingActionButton>
     return (
     <div>
@@ -44,7 +65,7 @@ class AppComponent extends React.Component {
       {closeButton(this.handleClick)}
            <List>
            <Subheader>Articles</Subheader>
-            <ListItem primaryText="Article 1"/>
+           {articlesList}
            </List>
       </Drawer>
     </div>
